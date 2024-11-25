@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
+import LoadingSpinner from "./components/LoadingSpinner"; // Import component LoadingSpinner
 
 // S3 Client setup
 const s3Client = new S3Client({
@@ -14,6 +15,7 @@ const FileList = () => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const bucketName = import.meta.env.VITE_AWS_S3_BUCKET_NAME;
 
@@ -37,10 +39,9 @@ const FileList = () => {
         lastModified: new Date(file.LastModified),
       }));
 
-      // Arranged files by modification time from newest to oldest
       fileList.sort((a, b) => b.lastModified - a.lastModified);
-
       setFiles(fileList);
+      setSuccessMessage("Files fetched successfully!");
     } catch (err) {
       setError("Failed to fetch files from S3");
       console.error(err);
@@ -54,14 +55,14 @@ const FileList = () => {
   }, []);
 
   return (
-    <div style={{ padding: "20px" }}>
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {!loading && !error && files.length === 0 && <p>No files found.</p>}
-
-      {!loading && !error && files.length > 0 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+    <LoadingSpinner
+      isLoading={loading}
+      error={error}
+      successMessage={successMessage}
+    >
+      <div>
+        {files.length === 0 && !loading && <p>No files found.</p>}
+        <div>
           {files.map((file) => (
             <div key={file.key} style={{ width: "250px", textAlign: "center" }}>
               {file.key.toLowerCase().endsWith(".mp4") ||
@@ -94,21 +95,11 @@ const FileList = () => {
                   }}
                 />
               )}
-              <p>
-                <strong>File:</strong> {file.key.split("/").pop()}
-              </p>
-              <p>
-                <strong>Size:</strong> {file.size}
-              </p>
-              <p>
-                <strong>Last Modified:</strong>{" "}
-                {file.lastModified.toLocaleString()}
-              </p>
             </div>
           ))}
         </div>
-      )}
-    </div>
+      </div>
+    </LoadingSpinner>
   );
 };
 
