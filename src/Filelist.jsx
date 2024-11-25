@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import LoadingSpinner from "./components/LoadingSpinner"; // Import component LoadingSpinner
+import Skeleton from "react-loading-skeleton"; // Import Skeleton library
+import "react-loading-skeleton/dist/skeleton.css"; // Import CSS for Skeleton
 
 // S3 Client setup
 const s3Client = new S3Client({
@@ -65,18 +67,23 @@ const FileList = () => {
         <div>
           {files.map((file) => (
             <div key={file.key} style={{ width: "250px", textAlign: "center" }}>
-              {file.key.toLowerCase().endsWith(".mp4") ||
-              file.key.toLowerCase().endsWith(".mov") ||
-              file.key.toLowerCase().endsWith(".avi") ||
-              file.key.toLowerCase().endsWith(".mkv") ||
-              file.key.toLowerCase().endsWith(".webm") ? (
+              {loading ? (
+                <Skeleton height={180} />
+              ) : file.key.toLowerCase().endsWith(".mp4") ||
+                file.key.toLowerCase().endsWith(".mov") ||
+                file.key.toLowerCase().endsWith(".avi") ||
+                file.key.toLowerCase().endsWith(".mkv") ||
+                file.key.toLowerCase().endsWith(".webm") ? (
                 <video
-                  controls
                   style={{
                     width: "100%",
                     height: "auto",
                     borderRadius: "8px",
+                    objectFit: "cover",
                   }}
+                  muted
+                  autoplay
+                  loop
                 >
                   <source
                     src={`https://${bucketName}.s3.amazonaws.com/${file.key}`}

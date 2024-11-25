@@ -3,20 +3,25 @@ import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import styles
 
-const LoadingSpinner = ({ isLoading, error, successMessage, children }) => {
+const LoadingSpinner = ({
+  isLoading,
+  error,
+  isOpenSuccess = false,
+  successMessage,
+  children,
+}) => {
   useEffect(() => {
     if (error) {
       toast.error(error);
     }
 
-    if (successMessage) {
+    if (isOpenSuccess && successMessage) {
       toast.success(successMessage);
     }
-  }, [error, successMessage]);
+  }, [error, isOpenSuccess, successMessage]);
 
   return (
     <div>
-      {/* Full screen loading spinner */}
       {isLoading && (
         <div
           style={{
