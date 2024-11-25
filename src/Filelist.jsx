@@ -6,23 +6,21 @@ const s3Client = new S3Client({
   region: "us-east-1",
   credentials: {
     accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY,
-    secretAccessKey: import.meta.env.VITE_AWS_SECRET_KEY, // Sửa lỗi chính tả
+    secretAccessKey: import.meta.env.VITE_AWS_SECRET_KEY,
   },
 });
 
 const FileList = () => {
-  const [files, setFiles] = useState([]); // State để lưu danh sách tệp
-  const [loading, setLoading] = useState(true); // State để kiểm soát loading
-  const [error, setError] = useState(null); // State để lưu lỗi (nếu có)
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const bucketName = "my-beautiful-memories"; // Định nghĩa biến bucketName
-  const prefix = "uploads/"; // Cấu trúc thư mục trong S3
+  const bucketName = import.meta.env.VITE_AWS_S3_BUCKET_NAME;
 
-  // Hàm lấy danh sách tệp từ S3
   const fetchFilesFromS3 = async () => {
     const command = new ListObjectsV2Command({
       Bucket: bucketName,
-      Prefix: prefix,
+      Prefix: "uploads/",
     });
 
     try {
@@ -35,9 +33,12 @@ const FileList = () => {
 
       const fileList = response.Contents.map((file) => ({
         key: file.Key,
-        size: (file.Size / 1024).toFixed(2) + " KB", // Hiển thị kích thước tệp
-        lastModified: new Date(file.LastModified).toLocaleString(), // Format thời gian
+        size: (file.Size / 1024).toFixed(2) + " KB",
+        lastModified: new Date(file.LastModified),
       }));
+
+      // Arranged files by modification time from newest to oldest
+      fileList.sort((a, b) => b.lastModified - a.lastModified);
 
       setFiles(fileList);
     } catch (err) {
@@ -93,15 +94,16 @@ const FileList = () => {
                   }}
                 />
               )}
-              {/* <p>
+              <p>
                 <strong>File:</strong> {file.key.split("/").pop()}
               </p>
               <p>
                 <strong>Size:</strong> {file.size}
               </p>
               <p>
-                <strong>Last Modified:</strong> {file.lastModified}
-              </p> */}
+                <strong>Last Modified:</strong>{" "}
+                {file.lastModified.toLocaleString()}
+              </p>
             </div>
           ))}
         </div>
