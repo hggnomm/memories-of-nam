@@ -15,9 +15,10 @@ const FileList = () => {
   const [loading, setLoading] = useState(true); // State để kiểm soát loading
   const [error, setError] = useState(null); // State để lưu lỗi (nếu có)
 
+  const bucketName = "my-beautiful-memories"; // Định nghĩa biến bucketName ở phạm vi toàn cục trong component
+
   // Hàm lấy danh sách tệp từ S3
   const fetchFilesFromS3 = async () => {
-    const bucketName = "my-beautiful-memories"; // Tên bucket
     const prefix = "uploads/"; // Cấu trúc thư mục nếu có
 
     const command = new ListObjectsV2Command({
@@ -53,9 +54,21 @@ const FileList = () => {
     fetchFilesFromS3();
   }, []);
 
+  // Phân loại file
+  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp"];
+  const videoExtensions = [".mp4", ".mov", ".avi", ".mkv", ".webm"];
+
+  const images = files.filter((file) =>
+    imageExtensions.some((ext) => file.key.toLowerCase().endsWith(ext))
+  );
+
+  const videos = files.filter((file) =>
+    videoExtensions.some((ext) => file.key.toLowerCase().endsWith(ext))
+  );
+
   return (
     <div>
-      <h1>File List</h1>
+      <h1>Media Files</h1>
 
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -63,16 +76,56 @@ const FileList = () => {
       {!loading && !error && files.length === 0 && <p>No files found.</p>}
 
       {!loading && !error && files.length > 0 && (
-        <ul>
-          {files.map((file) => (
-            <li key={file.key}>
-              <p><strong>Key:</strong> {file.key}</p>
-              <p><strong>Size:</strong> {file.size} bytes</p>
-              <p><strong>Last Modified:</strong> {file.lastModified}</p>
-              <hr />
-            </li>
-          ))}
-        </ul>
+        <>
+          <h2>Images</h2>
+          {images.length > 0 ? (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+              {images.map((file) => (
+                <div key={file.key} style={{ textAlign: "center" }}>
+                  <img
+                    src={`https://${bucketName}.s3.amazonaws.com/${file.key}`}
+                    alt={file.key}
+                    style={{
+                      width: "150px",
+                      height: "auto",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <p>{file.key}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No images found.</p>
+          )}
+
+          <h2>Videos</h2>
+          {videos.length > 0 ? (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+              {videos.map((file) => (
+                <div key={file.key} style={{ textAlign: "center" }}>
+                  <video
+                    controls
+                    style={{
+                      width: "250px",
+                      height: "auto",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <source
+                      src={`https://${bucketName}.s3.amazonaws.com/${file.key}`}
+                      type="video/mp4"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                  <p>{file.key}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No videos found.</p>
+          )}
+        </>
       )}
     </div>
   );
