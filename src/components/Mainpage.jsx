@@ -68,7 +68,12 @@ const Mainpage = ({ items }) => {
             width: 256,
             height: 256,
           }}
-          transition={{ type: "spring", stiffness: 200, damping: 25 }}
+          transition={{
+            type: "spring",
+            stiffness: 200,
+            damping: 25,
+            duration: 0.5, // Thêm thời gian cho chuyển động mượt mà hơn
+          }}
         >
           {renderMedia(items.find((item) => item.id === selectedId), true)} {/* Gửi `true` để hiển thị controls */}
         </motion.div>
