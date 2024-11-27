@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
-import LoadingSpinner from "./components/LoadingSpinner"; 
-import Skeleton from "react-loading-skeleton"; 
-import "react-loading-skeleton/dist/skeleton.css"; 
-import Mainpage from "./Mainpage"; 
-import { IoMdArrowDropleftCircle, IoMdArrowDroprightCircle } from "react-icons/io"; 
+import LoadingSpinner from "./components/LoadingSpinner";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import Mainpage from "./Mainpage";
+import { IoMdArrowDropleftCircle, IoMdArrowDroprightCircle } from "react-icons/io";
 
 // S3 Client setup
 const s3Client = new S3Client({
@@ -21,11 +21,11 @@ const FileList = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [page, setPage] = useState(1);
+  const [continuationToken, setContinuationToken] = useState(null); // Lưu token phân trang
+  const [hasMore, setHasMore] = useState(true); // Kiểm tra xem có thêm tệp hay không
 
-
-  const [continuationToken, setContinuationToken] = useState(null); 
   const bucketName = import.meta.env.VITE_AWS_S3_BUCKET_NAME;
-  const maxItemsPerPage = 10; 
+  const maxItemsPerPage = 10;
 
   const fetchFilesFromS3 = async () => {
     setLoading(true);
@@ -63,9 +63,11 @@ const FileList = () => {
       // Kiểm tra xem có tiếp tục phân trang không
       if (response.IsTruncated) {
         setContinuationToken(response.NextContinuationToken);
+        setHasMore(true);  // Có thêm tệp cho các trang sau
         setSuccessMessage(`Loaded page ${page} of files.`);
       } else {
         setContinuationToken(null); // Reset token khi đã tải hết
+        setHasMore(false); // Không còn tệp để tải thêm
         setSuccessMessage("All files loaded successfully!");
       }
     } catch (err) {
@@ -77,7 +79,9 @@ const FileList = () => {
   };
 
   useEffect(() => {
-    fetchFilesFromS3();
+    setFiles([]); // Reset lại danh sách tệp mỗi khi trang thay đổi
+    setContinuationToken(null); // Reset lại token phân trang
+    fetchFilesFromS3(); // Gọi hàm tải dữ liệu cho trang mới
   }, [page]); // Mỗi khi `page` thay đổi, gọi lại hàm fetch
 
   // Biến files thành mảng các đối tượng {id, img, isVideo}
@@ -101,15 +105,17 @@ const FileList = () => {
         {/* Phân trang */}
         <div className="fixed bottom-5 left-5 flex items-center gap-x-2 text-2xl bg-yellow-500 rounded-full px-2">
           <span
-            onClick={() => page !== 1 && setPage((prevPage) => prevPage - 1)}
+            onClick={() => page > 1 && setPage((prevPage) => prevPage - 1)}
             className="cursor-pointer"
+            disabled={page === 1}
           >
             <IoMdArrowDropleftCircle />
           </span>
           <p className="text-xl select-none">{page}</p>
           <span
-            onClick={() => setPage((prevPage) => prevPage + 1)}
+            onClick={() => hasMore && setPage((prevPage) => prevPage + 1)}
             className="cursor-pointer"
+            disabled={!hasMore}
           >
             <IoMdArrowDroprightCircle />
           </span>
