@@ -16,7 +16,11 @@ const Mainpage = () => {
   ];
 
   const [selectedId, setSelectedId] = useState(1); // Mặc định chọn ô đầu tiên
-  const [fakeItemPosition, setFakeItemPosition] = useState(null); // Lưu vị trí click
+  const [fakeItemPosition, setFakeItemPosition] = useState({
+    x: null,
+    y: null,
+  });
+  const [fakeItem, setFakeItem] = useState(null);
 
   const handleClick = (e, id) => {
     const { clientX, clientY } = e; // Lấy tọa độ (x, y) của sự kiện click
@@ -30,7 +34,7 @@ const Mainpage = () => {
       {/* Vùng item con giả */}
       {fakeItemPosition && (
         <motion.div
-          className="absolute w-16 h-16 rounded-lg"
+          className="absolute rounded-lg"
           style={{
             backgroundColor: items.find((item) => item.id === selectedId)
               ?.color,
@@ -38,13 +42,15 @@ const Mainpage = () => {
             top: fakeItemPosition.y - 32,
           }}
           key={`fake-item-${selectedId}`} // Thêm key mới khi selectedId thay đổi
-          initial={{ opacity: 1 }}
+          initial={{ opacity: 1, width: 64, height: 64 }}
           animate={{
             left: "50%",
-            top: "50%",
+            top: "30%",
             x: "-50%",
             y: "-50%",
             opacity: 1,
+            width: 256,
+            height: 256,
           }}
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
         />
