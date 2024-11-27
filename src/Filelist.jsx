@@ -3,6 +3,7 @@ import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import LoadingSpinner from "./components/LoadingSpinner"; // Import component LoadingSpinner
 import Skeleton from "react-loading-skeleton"; // Import Skeleton library
 import "react-loading-skeleton/dist/skeleton.css"; // Import CSS for Skeleton
+import Mainpage from "./Mainpage"; // Import Mainpage component
 
 // S3 Client setup
 const s3Client = new S3Client({
@@ -39,6 +40,12 @@ const FileList = () => {
         key: file.Key,
         size: (file.Size / 1024).toFixed(2) + " KB",
         lastModified: new Date(file.LastModified),
+        isVideo:
+          file.Key.toLowerCase().endsWith(".mp4") ||
+          file.Key.toLowerCase().endsWith(".mov") ||
+          file.Key.toLowerCase().endsWith(".avi") ||
+          file.Key.toLowerCase().endsWith(".mkv") ||
+          file.Key.toLowerCase().endsWith(".webm"),
       }));
 
       fileList.sort((a, b) => b.lastModified - a.lastModified);
@@ -56,6 +63,13 @@ const FileList = () => {
     fetchFilesFromS3();
   }, []);
 
+  // Biến files thành mảng các đối tượng {id, img, isVideo}
+  const items = files.map((file, index) => ({
+    id: index + 1,
+    img: `https://${bucketName}.s3.amazonaws.com/${file.key}`, // Địa chỉ hình ảnh hoặc video
+    isVideo: file.isVideo,
+  }));
+
   return (
     <LoadingSpinner
       isLoading={loading}
@@ -64,47 +78,8 @@ const FileList = () => {
     >
       <div>
         {files.length === 0 && !loading && <p>No files found.</p>}
-        <div>
-          {files.map((file) => (
-            <div key={file.key} style={{ width: "250px", textAlign: "center" }}>
-              {loading ? (
-                <Skeleton height={180} />
-              ) : file.key.toLowerCase().endsWith(".mp4") ||
-                file.key.toLowerCase().endsWith(".mov") ||
-                file.key.toLowerCase().endsWith(".avi") ||
-                file.key.toLowerCase().endsWith(".mkv") ||
-                file.key.toLowerCase().endsWith(".webm") ? (
-                <video
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    borderRadius: "8px",
-                    objectFit: "cover",
-                  }}
-                  muted
-                  autoplay
-                  loop
-                >
-                  <source
-                    src={`https://${bucketName}.s3.amazonaws.com/${file.key}`}
-                    type="video/mp4"
-                  />
-                  Your browser does not support the video tag.
-                </video>
-              ) : (
-                <img
-                  src={`https://${bucketName}.s3.amazonaws.com/${file.key}`}
-                  alt={file.key}
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    borderRadius: "8px",
-                  }}
-                />
-              )}
-            </div>
-          ))}
-        </div>
+        {/* Chuyển props 'items' vào Mainpage */}
+        {files.length !== 0  && <Mainpage items={items} />}
       </div>
     </LoadingSpinner>
   );

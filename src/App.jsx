@@ -6,9 +6,9 @@ import Mainpage from "./MainPage";
 const App = () => {
   return (
     <div className="container">
-      {/* <ToastContainer />
-      <FileList /> */}
-      <Mainpage />
+      <ToastContainer />
+      <FileList /> 
+      {/* <Mainpage /> */}
     </div>
   );
 };
