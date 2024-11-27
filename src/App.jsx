@@ -2,12 +2,14 @@ import React from "react";
 import FileList from "./components/Filelist";
 import { ToastContainer } from "react-toastify";
 import Preloader from "./components/PreLoading/PreLoader";
+import CommingSoon from "./components/ComingSoon/ComingSoon";
 
 const App = () => {
   return (
-    <div>
+    <div className="h-screen w-screen">
       <ToastContainer />
-      <FileList />
+      {/* <FileList /> */}
+      <CommingSoon />
       <Preloader />
     </div>
   );
