@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const Mainpage = ({ items }) => {
@@ -7,6 +7,18 @@ const Mainpage = ({ items }) => {
     x: null,
     y: null,
   });
+
+  // Dùng useEffect để thiết lập fakeItemPosition cho item đầu tiên khi component được render lần đầu
+  useEffect(() => {
+    if (items && items.length > 0) {
+      const firstItem = items[0]; // Item đầu tiên trong danh sách
+      setFakeItemPosition({
+        x: window.innerWidth / 2, // Vị trí căn giữa màn hình
+        y: window.innerHeight / 3, // Vị trí căn giữa một chút từ trên xuống
+      });
+      setSelectedId(firstItem.id); // Mặc định chọn item đầu tiên
+    }
+  }, [items]); // Khi items thay đổi, thiết lập lại vị trí fakeItem
 
   const handleClick = (e, id) => {
     const { clientX, clientY } = e; // Lấy tọa độ (x, y) của sự kiện click
