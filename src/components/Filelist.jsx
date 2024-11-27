@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
-import LoadingSpinner from "./components/LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Mainpage from "./Mainpage";
 import { IoMdArrowDropleftCircle, IoMdArrowDroprightCircle } from "react-icons/io";
 import { toast } from "react-toastify"; // Import react-toastify
 import "react-toastify/dist/ReactToastify.css"; // Import CSS của react-toastify
+import Loading from "./Loading";
 
 // S3 Client setup
 const s3Client = new S3Client({
@@ -95,12 +96,12 @@ const FileList = () => {
   }));
 
   return (
-    <LoadingSpinner
+    <Loading
       isLoading={loading}
       error={error}
       successMessage={successMessage}
     >
-      <div>
+      <div className="h-screen w-100%">
         {files.length === 0 && !loading && <p>No files found.</p>}
         {/* Chuyển props 'items' vào Mainpage */}
         {files.length !== 0 && <Mainpage items={items} />}
@@ -130,7 +131,7 @@ const FileList = () => {
           </span>
         </div>
       </div>
-    </LoadingSpinner>
+    </Loading>
   );
 };
 
