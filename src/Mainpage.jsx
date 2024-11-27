@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-const Mainpage = ({ items }) => { // Nhận data items từ props
-  console.log(items)
-  const [selectedId, setSelectedId] = useState(1); // Mặc định chọn ô đầu tiên
+const Mainpage = ({ items }) => {
+  const [selectedId, setSelectedId] = useState(1);
   const [fakeItemPosition, setFakeItemPosition] = useState({
     x: null,
     y: null,
@@ -13,6 +12,27 @@ const Mainpage = ({ items }) => { // Nhận data items từ props
     const { clientX, clientY } = e; // Lấy tọa độ (x, y) của sự kiện click
     setSelectedId(id);
     setFakeItemPosition({ x: clientX, y: clientY }); // Lưu vị trí click
+  };
+
+  const renderMedia = (item, isFakeItem = false) => {
+    if (item.isVideo) {
+      return (
+        <video
+          src={item.img}
+          alt={`Item ${item.id}`}
+          className="w-full h-full object-cover"
+          controls={isFakeItem} // Chỉ hiển thị controls khi là fakeItem
+        />
+      );
+    } else {
+      return (
+        <img
+          src={item.img}
+          alt={`Item ${item.id}`}
+          className="w-full h-full object-cover"
+        />
+      );
+    }
   };
 
   return (
@@ -38,11 +58,7 @@ const Mainpage = ({ items }) => { // Nhận data items từ props
           }}
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
         >
-          <img
-            src={items.find((item) => item.id === selectedId)?.img}
-            alt={`Selected item ${selectedId}`}
-            className="w-full h-full object-cover"
-          />
+          {renderMedia(items.find((item) => item.id === selectedId), true)} {/* Gửi `true` để hiển thị controls */}
         </motion.div>
       )}
 
@@ -58,11 +74,7 @@ const Mainpage = ({ items }) => { // Nhận data items từ props
             }}
             onClick={(e) => handleClick(e, item.id)} // Truyền sự kiện click để lấy vị trí
           >
-            <img
-              src={item.img}
-              alt={`Item ${item.id}`}
-              className="w-full h-full object-cover"
-            />
+            {renderMedia(item)} {/* Render ảnh hoặc video không có controls */}
           </div>
         ))}
       </div>
