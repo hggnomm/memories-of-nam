@@ -60,7 +60,9 @@ const FileList = () => {
   };
 
   useEffect(() => {
-    fetchFilesFromS3();
+    return () => {
+      fetchFilesFromS3();
+    };
   }, []);
 
   // Biến files thành mảng các đối tượng {id, img, isVideo}
@@ -79,7 +81,7 @@ const FileList = () => {
       <div>
         {files.length === 0 && !loading && <p>No files found.</p>}
         {/* Chuyển props 'items' vào Mainpage */}
-        {files.length !== 0  && <Mainpage items={items} />}
+        {files.length !== 0 && <Mainpage items={items} />}
       </div>
     </LoadingSpinner>
   );
