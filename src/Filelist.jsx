@@ -5,6 +5,8 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Mainpage from "./Mainpage";
 import { IoMdArrowDropleftCircle, IoMdArrowDroprightCircle } from "react-icons/io";
+import { toast } from "react-toastify"; // Import react-toastify
+import "react-toastify/dist/ReactToastify.css"; // Import CSS của react-toastify
 
 // S3 Client setup
 const s3Client = new S3Client({
@@ -69,6 +71,7 @@ const FileList = () => {
         setContinuationToken(null); // Reset token khi đã tải hết
         setHasMore(false); // Không còn tệp để tải thêm
         setSuccessMessage("All files loaded successfully!");
+        toast.info("You have reached the last page."); // Hiển thị toast khi tới trang cuối cùng
       }
     } catch (err) {
       setError("Failed to fetch files from S3");
@@ -113,7 +116,13 @@ const FileList = () => {
           </span>
           <p className="text-xl select-none">{page}</p>
           <span
-            onClick={() => hasMore && setPage((prevPage) => prevPage + 1)}
+            onClick={() => {
+              if (hasMore) {
+                setPage((prevPage) => prevPage + 1);
+              } else {
+                toast.info("You have reached the last page."); // Hiển thị toast khi không còn trang tiếp theo
+              }
+            }}
             className="cursor-pointer"
             disabled={!hasMore}
           >
