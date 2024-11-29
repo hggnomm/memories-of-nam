@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import "react-loading-skeleton/dist/skeleton.css";
 import Mainpage from "./Mainpage";
-import { IoMdArrowDropleftCircle, IoMdArrowDroprightCircle } from "react-icons/io";
+import {
+  IoMdArrowDropleftCircle,
+  IoMdArrowDroprightCircle,
+} from "react-icons/io";
 import { toast } from "react-toastify"; // Import react-toastify
 import "react-toastify/dist/ReactToastify.css"; // Import CSS của react-toastify
 import Loading from "./Loading";
@@ -32,7 +35,7 @@ const FileList = () => {
     setLoading(true);
     const command = new ListObjectsV2Command({
       Bucket: bucketName,
-      Prefix: "uploads/",  // Dựng thư mục cần lấy tệp
+      Prefix: "uploads/", // Dựng thư mục cần lấy tệp
       MaxKeys: maxItemsPerPage, // Giới hạn 10 tệp mỗi lần gọi
       ContinuationToken: continuationToken, // Token phân trang nếu có
     });
@@ -64,7 +67,7 @@ const FileList = () => {
       // Kiểm tra xem có tiếp tục phân trang không
       if (response.IsTruncated) {
         setContinuationToken(response.NextContinuationToken);
-        setHasMore(true);  // Có thêm tệp cho các trang sau
+        setHasMore(true); // Có thêm tệp cho các trang sau
         setSuccessMessage(`Loaded page ${page} of files.`);
       } else {
         setContinuationToken(null); // Reset token khi đã tải hết
@@ -94,42 +97,43 @@ const FileList = () => {
   }));
 
   return (
-    <Loading
-      isLoading={loading}
-      error={error}
-      successMessage={successMessage}
-    >
-      <div className="h-screen w-100%">
-        {files.length === 0 && !loading && <p>No files found.</p>}
-        {/* Chuyển props 'items' vào Mainpage */}
-        {files.length !== 0 && <Mainpage items={items} />}
-        
-        {/* Phân trang */}
-        <div className="fixed xl:bottom-10 xl:left-12 flex items-center gap-x-2 text-2xl bg-yellow-500 rounded-full px-2 py-1">
-          <span
-            onClick={() => page > 1 && setPage((prevPage) => prevPage - 1)}
-            className="cursor-pointer"
-            disabled={page === 1}
-          >
-            <IoMdArrowDropleftCircle />
-          </span>
-          <p className="text-xl select-none">{page}</p>
-          <span
-            onClick={() => {
-              if (hasMore) {
-                setPage((prevPage) => prevPage + 1);
-              } else {
-                toast.info("You have reached the last page."); // Hiển thị toast khi không còn trang tiếp theo
-              }
-            }}
-            className="cursor-pointer"
-            disabled={!hasMore}
-          >
-            <IoMdArrowDroprightCircle />
-          </span>
+    <>
+      <Loading
+        isLoading={loading}
+        error={error}
+        successMessage={successMessage}
+      >
+        <div className="h-screen w-100%">
+          {files.length === 0 && !loading && <p>No files found.</p>}
+          {/* Chuyển props 'items' vào Mainpage */}
+          {files.length !== 0 && <Mainpage items={items} />}
         </div>
+      </Loading>
+      {/* Phân trang */}
+      <div className="fixed xl:bottom-10 xl:left-[5.8rem] bottom-[23%] left-1/2 transform -translate-x-1/2 flex items-center gap-x-2 text-2xl bg-yellow-500 rounded-full px-2 py-1">
+        <span
+          onClick={() => page > 1 && setPage((prevPage) => prevPage - 1)}
+          className="cursor-pointer"
+          disabled={page === 1}
+        >
+          <IoMdArrowDropleftCircle />
+        </span>
+        <p className="text-xl select-none">{page}</p>
+        <span
+          onClick={() => {
+            if (hasMore) {
+              setPage((prevPage) => prevPage + 1);
+            } else {
+              toast.info("You have reached the last page."); // Hiển thị toast khi không còn trang tiếp theo
+            }
+          }}
+          className="cursor-pointer"
+          disabled={!hasMore}
+        >
+          <IoMdArrowDroprightCircle />
+        </span>
       </div>
-    </Loading>
+    </>
   );
 };
 

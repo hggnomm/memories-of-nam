@@ -128,7 +128,7 @@ const Mainpage = ({ items }) => {
             transition={{
               type: "spring",
               stiffness: 150,
-              damping: 25,
+              damping: 20,
               duration: 1,
             }}
           >
@@ -152,11 +152,11 @@ const Mainpage = ({ items }) => {
       </div>
 
       {/* Vùng danh sách các ô nhỏ */}
-      <div className="flex space-x-4 mt-auto xl:mb-5 bg-gray-100 p-4 xl:rounded-xl shadow-lg xl:w-3/4 sm:w-full">
+      <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-6 xl:grid-cols-10 xl:gap-4 gap-2 mt-auto xl:mb-5 mb-20 bg-gray-100 xl:p-4 p-1 xl:rounded-xl shadow-lg xl:w-3/4 sm:w-full">
         {items?.map((item) => (
           <div
             key={item.id}
-            className={`xl:w-28 sm:w-full cursor-pointer transform transition-transform duration-500 hover:scale-110 overflow-hidden rounded-xl`}
+            className={`cursor-pointer transform transition-transform duration-500 hover:scale-110 overflow-hidden rounded-xl`}
             style={{
               opacity: item.id === selectedId ? 0.6 : 1,
               zIndex: item.id === selectedId ? 10 : 1,
