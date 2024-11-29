@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import playIcon from "../assets/icons8-play-100.png";
 import pauseIcon from "../assets/icons8-pause-100.png";
+
 const Mainpage = ({ items }) => {
   const [selectedId, setSelectedId] = useState(1);
   const [fakeItemPosition, setFakeItemPosition] = useState({
@@ -16,55 +17,55 @@ const Mainpage = ({ items }) => {
 
   useEffect(() => {
     if (items && items.length > 0) {
-      const firstItem = items[0]; // Item đầu tiên trong danh sách
+      const firstItem = items[0];
       setFakeItemPosition({
-        x: window.innerWidth / 2, // Vị trí căn giữa màn hình
-        y: window.innerHeight / 3, // Vị trí căn giữa một chút từ trên xuống
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 3,
       });
-      setSelectedId(firstItem.id); // Mặc định chọn item đầu tiên
+      setSelectedId(firstItem.id);
     }
   }, [items]);
 
   const handleClick = (e, id) => {
-    const { clientX, clientY } = e; // Lấy tọa độ (x, y) của sự kiện click
+    const { clientX, clientY } = e;
     setSelectedId(id);
-    setFakeItemPosition({ x: clientX, y: clientY }); // Lưu vị trí click
+    setFakeItemPosition({ x: clientX, y: clientY });
 
-    setIsPlaying(false); // Dừng video khi chuyển đổi
-    setIsButtonVisible(true); // Hiển thị nút khi chuyển đổi video
-    setIsButtonHovered(false); // Đặt trạng thái hover nút về mặc định
+    setIsPlaying(false);
+    setIsButtonVisible(true);
+    setIsButtonHovered(false);
   };
 
   const handlePlayPause = () => {
     const video = vidRef.current;
     if (isPlaying) {
-      video.pause(); // Dừng video
+      video.pause();
     } else {
-      video.play(); // Phát video
-      setIsButtonVisible(false); // Ẩn nút khi video bắt đầu phát
+      video.play();
+      setIsButtonVisible(false);
     }
-    setIsPlaying(!isPlaying); // Cập nhật trạng thái phát video
+    setIsPlaying(!isPlaying);
   };
 
   const handleMouseEnter = () => {
-    setIsButtonHovered(true); // Khi hover vào nút, giữ nút hiển thị
+    setIsButtonHovered(true);
   };
 
   const handleMouseLeave = () => {
-    setIsButtonHovered(false); // Khi rời chuột khỏi nút, kiểm tra nếu không hover vào video thì ẩn nút
+    setIsButtonHovered(false);
     if (!isPlaying) {
-      setIsButtonVisible(false); // Ẩn nút nếu video không chơi và không hover vào nút
+      setIsButtonVisible(false);
     }
   };
 
   const handleButtonMouseEnter = () => {
-    setIsButtonHovered(true); // Khi hover vào nút, giữ nút hiển thị
+    setIsButtonHovered(true);
   };
 
   const handleButtonMouseLeave = () => {
-    setIsButtonHovered(false); // Khi rời chuột khỏi nút, kiểm tra nếu không hover vào video thì ẩn nút
+    setIsButtonHovered(false);
     if (!isPlaying) {
-      setIsButtonVisible(false); // Giữ nút ẩn khi video không phát
+      setIsButtonVisible(false);
     }
   };
 
@@ -77,7 +78,7 @@ const Mainpage = ({ items }) => {
           alt={`Item ${item.id}`}
           className={`${
             isFakeItem ? "h-[65%] border-2 border-[#1e2721]" : "w-full h-full"
-          } rounded-xl shadow-[0_20px_100px_rgba(238,_238,_238,_0.9)] `}
+          } rounded-xl shadow-[0_20px_100px_rgba(238,_238,_238,_0.9)]`}
           disablePictureInPicture
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -88,7 +89,7 @@ const Mainpage = ({ items }) => {
         <img
           src={item.img}
           alt={`Item ${item.id}`}
-          className={`${isFakeItem ? "h-[65%]" : "w-full h-full"} rounded-xl `}
+          className={`${isFakeItem ? "h-[65%]" : "w-full h-full"} rounded-xl`}
         />
       );
     }
@@ -124,7 +125,7 @@ const Mainpage = ({ items }) => {
             }}
           >
             <button
-              className={`absolute text-white bg-black  p-3 rounded-full z-20 transition-opacity duration-500 ${
+              className={`absolute text-white bg-black p-3 rounded-full z-20 transition-opacity duration-500 ${
                 isButtonVisible || isButtonHovered ? "opacity-50" : "opacity-0"
               }`}
               onClick={handlePlayPause}
@@ -134,20 +135,17 @@ const Mainpage = ({ items }) => {
               <img width={36} src={isPlaying ? pauseIcon : playIcon} />
             </button>
 
-            {renderMedia(
-              items.find((item) => item.id === selectedId),
-              true
-            )}
+            {renderMedia(items.find((item) => item.id === selectedId), true)}
           </motion.div>
         )}
       </div>
 
-      {/* Vùng danh sách các ô nhỏ */}
-      <div className="flex space-x-4 mt-auto mb-5 bg-gray-100 p-4 rounded-xl shadow-lg">
+      {/* Small item thumbnails */}
+      <div className="flex flex-wrap justify-center gap-4 mt-auto mb-5 bg-gray-100 p-4 rounded-xl shadow-lg">
         {items?.map((item) => (
           <div
             key={item.id}
-            className={`w-28 cursor-pointer transform transition-transform duration-500 hover:scale-110 overflow-hidden rounded-xl`}
+            className={`w-24 sm:w-28 md:w-32 cursor-pointer transform transition-transform duration-500 hover:scale-110 overflow-hidden rounded-xl`}
             style={{
               opacity: item.id === selectedId ? 0.6 : 1,
               zIndex: item.id === selectedId ? 10 : 1,
