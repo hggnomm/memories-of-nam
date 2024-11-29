@@ -77,7 +77,7 @@ const Mainpage = ({ items }) => {
           src={item.img}
           alt={`Item ${item.id}`}
           className={`${
-            isFakeItem ? "h-[65%] border-2 border-[#1e2721]" : "w-full h-full"
+            isFakeItem ? "h-[65%] border-2  border-[#1e2721]" : "w-full h-full"
           } rounded-xl shadow-[0_20px_100px_rgba(238,_238,_238,_0.9)]`}
           disablePictureInPicture
           onMouseEnter={handleMouseEnter}
@@ -89,7 +89,9 @@ const Mainpage = ({ items }) => {
         <img
           src={item.img}
           alt={`Item ${item.id}`}
-          className={`${isFakeItem ? "h-[65%]" : "w-full h-full"} rounded-xl`}
+          className={`${
+            isFakeItem ? "h-[65%] border-2  border-[#1e2721]" : "w-full h-full"
+          } rounded-xl shadow-[0_20px_100px_rgba(238,_238,_238,_0.9)]`}
         />
       );
     }
@@ -135,7 +137,10 @@ const Mainpage = ({ items }) => {
               <img width={36} src={isPlaying ? pauseIcon : playIcon} />
             </button>
 
-            {renderMedia(items.find((item) => item.id === selectedId), true)}
+            {renderMedia(
+              items.find((item) => item.id === selectedId),
+              true
+            )}
           </motion.div>
         )}
       </div>
