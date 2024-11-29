@@ -8,8 +8,8 @@ const App = () => {
   return (
     <div className="h-screen w-screen">
       <ToastContainer />
-      {/* <FileList /> */}
-      <CommingSoon />
+      <FileList />
+      {/* <CommingSoon /> */}
       <Preloader />
     </div>
   );
