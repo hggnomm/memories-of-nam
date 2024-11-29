@@ -6,7 +6,7 @@ import CommingSoon from "./components/ComingSoon/ComingSoon";
 
 const App = () => {
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen w-screen bg-red-50">
       <ToastContainer />
       <FileList />
       {/* <CommingSoon /> */}

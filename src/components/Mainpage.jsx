@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import playIcon from "../assets/icons8-play-100.png";
 import pauseIcon from "../assets/icons8-pause-100.png";
+import BackgroundBubbles from "./BackgroundBubbles/BackgroundBubbles";
 const Mainpage = ({ items }) => {
   const [selectedId, setSelectedId] = useState(1);
   const [fakeItemPosition, setFakeItemPosition] = useState({
@@ -95,7 +96,9 @@ const Mainpage = ({ items }) => {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen min-w-full bg-[#9f9f9f] overflow-hidden">
+    <div className="backgroundCustom relative flex flex-col items-center justify-center min-h-screen min-w-full overflow-hidden ">
+      {/* Custom background */}
+      <BackgroundBubbles />
       {/* Fake item */}
       <div className="w-full h-full">
         {fakeItemPosition.x !== null && fakeItemPosition.y !== null && (
