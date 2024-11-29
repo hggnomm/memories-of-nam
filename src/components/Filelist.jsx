@@ -105,7 +105,7 @@ const FileList = () => {
         {files.length !== 0 && <Mainpage items={items} />}
         
         {/* Phân trang */}
-        <div className="fixed bottom-5 left-5 flex items-center gap-x-2 text-2xl bg-yellow-500 rounded-full px-2">
+        <div className="fixed xl:bottom-10 xl:left-12 flex items-center gap-x-2 text-2xl bg-yellow-500 rounded-full px-2 py-1">
           <span
             onClick={() => page > 1 && setPage((prevPage) => prevPage - 1)}
             className="cursor-pointer"

@@ -77,8 +77,10 @@ const Mainpage = ({ items }) => {
           src={item.img}
           alt={`Item ${item.id}`}
           className={`${
-            isFakeItem ? "h-[65%] border-2 border-[#1e2721]" : "w-full h-full"
-          } rounded-xl shadow-[0_20px_100px_rgba(238,_238,_238,_0.9)] `}
+            isFakeItem
+              ? "xl:h-[65%] xl:border-2 border-[#1e2721]"
+              : "w-full h-full"
+          } rounded-xl shadow-[0_10px_50px_rgba(228,_224,_225,_0.9)]`}
           disablePictureInPicture
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -89,14 +91,18 @@ const Mainpage = ({ items }) => {
         <img
           src={item.img}
           alt={`Item ${item.id}`}
-          className={`${isFakeItem ? "h-[65%]" : "w-full h-full"} rounded-xl `}
+          className={`${
+            isFakeItem
+              ? "xl:h-[65%] xl:border-2  border-[#1e2721]"
+              : "w-full h-full"
+          } rounded-xl shadow-[0_10px_50px_rgba(228,_224,_225,_0.9)]`}
         />
       );
     }
   };
 
   return (
-    <div className="backgroundCustom relative flex flex-col items-center justify-center min-h-screen min-w-full overflow-hidden ">
+    <div className="backgroundCustom relative flex flex-col items-center justify-center min-h-screen min-w-full overflow-hidden bg-gray-950 ">
       {/* Custom background */}
       <BackgroundBubbles />
       {/* Fake item */}
@@ -127,7 +133,7 @@ const Mainpage = ({ items }) => {
             }}
           >
             <button
-              className={`absolute text-white bg-black  p-3 rounded-full z-20 transition-opacity duration-500 ${
+              className={`absolute text-white bg-black p-3 rounded-full z-20 transition-opacity duration-500 ${
                 isButtonVisible || isButtonHovered ? "opacity-50" : "opacity-0"
               }`}
               onClick={handlePlayPause}
@@ -146,11 +152,11 @@ const Mainpage = ({ items }) => {
       </div>
 
       {/* Vùng danh sách các ô nhỏ */}
-      <div className="flex space-x-4 mt-auto mb-5 bg-gray-100 p-4 rounded-xl shadow-lg">
+      <div className="flex space-x-4 mt-auto xl:mb-5 bg-gray-100 p-4 xl:rounded-xl shadow-lg xl:w-3/4 sm:w-full">
         {items?.map((item) => (
           <div
             key={item.id}
-            className={`w-28 cursor-pointer transform transition-transform duration-500 hover:scale-110 overflow-hidden rounded-xl`}
+            className={`xl:w-28 sm:w-full cursor-pointer transform transition-transform duration-500 hover:scale-110 overflow-hidden rounded-xl`}
             style={{
               opacity: item.id === selectedId ? 0.6 : 1,
               zIndex: item.id === selectedId ? 10 : 1,
