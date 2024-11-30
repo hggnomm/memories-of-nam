@@ -6,11 +6,10 @@ import {
   IoMdArrowDropleftCircle,
   IoMdArrowDroprightCircle,
 } from "react-icons/io";
-import { toast } from "react-toastify"; // Import react-toastify
-import "react-toastify/dist/ReactToastify.css"; // Import CSS của react-toastify
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Loading from "./Loading";
 
-// S3 Client setup
 const s3Client = new S3Client({
   region: "us-east-1",
   credentials: {
@@ -25,8 +24,9 @@ const FileList = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [page, setPage] = useState(1);
-  const [continuationToken, setContinuationToken] = useState(null); // Lưu token phân trang
-  const [hasMore, setHasMore] = useState(true); // Kiểm tra xem có thêm tệp hay không
+  const [continuationToken, setContinuationToken] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Năm hiện tại
 
   const bucketName = import.meta.env.VITE_AWS_S3_BUCKET_NAME;
   const maxItemsPerPage = 10;
@@ -35,20 +35,19 @@ const FileList = () => {
     setLoading(true);
     const command = new ListObjectsV2Command({
       Bucket: bucketName,
-      Prefix: "uploads/", // Dựng thư mục cần lấy tệp
-      MaxKeys: maxItemsPerPage, // Giới hạn 10 tệp mỗi lần gọi
-      ContinuationToken: continuationToken, // Token phân trang nếu có
+      Prefix: "uploads/",
+      MaxKeys: maxItemsPerPage,
+      ContinuationToken: continuationToken,
     });
 
     try {
       const response = await s3Client.send(command);
 
       if (!response.Contents || response.Contents.length === 0) {
-        setFiles([]); // Không có tệp
+        setFiles([]);
         return;
       }
 
-      // Xử lý tệp trả về
       const fileList = response.Contents.map((file) => ({
         key: file.Key,
         size: (file.Size / 1024).toFixed(2) + " KB",
@@ -61,19 +60,22 @@ const FileList = () => {
           file.Key.toLowerCase().endsWith(".webm"),
       }));
 
-      // Cập nhật danh sách tệp cho trang hiện tại
-      setFiles(fileList);
+      // Lọc danh sách dựa trên năm đã chọn
+      const filteredFiles = fileList.filter(
+        (file) => file.lastModified.getFullYear() === selectedYear
+      );
 
-      // Kiểm tra xem có tiếp tục phân trang không
+      setFiles(filteredFiles);
+
       if (response.IsTruncated) {
         setContinuationToken(response.NextContinuationToken);
-        setHasMore(true); // Có thêm tệp cho các trang sau
+        setHasMore(true);
         setSuccessMessage(`Loaded page ${page} of files.`);
       } else {
-        setContinuationToken(null); // Reset token khi đã tải hết
-        setHasMore(false); // Không còn tệp để tải thêm
+        setContinuationToken(null);
+        setHasMore(false);
         setSuccessMessage("All files loaded successfully!");
-        toast.info("You have reached the last page."); // Hiển thị toast khi tới trang cuối cùng
+        toast.info("You have reached the last page.");
       }
     } catch (err) {
       setError("Failed to fetch files from S3");
@@ -84,17 +86,21 @@ const FileList = () => {
   };
 
   useEffect(() => {
-    setFiles([]); // Reset lại danh sách tệp mỗi khi trang thay đổi
-    setContinuationToken(null); // Reset lại token phân trang
-    fetchFilesFromS3(); // Gọi hàm tải dữ liệu cho trang mới
-  }, [page]); // Mỗi khi `page` thay đổi, gọi lại hàm fetch
+    setFiles([]);
+    setContinuationToken(null);
+    fetchFilesFromS3();
+  }, [page, selectedYear]); // Gọi lại fetch khi năm thay đổi
 
-  // Biến files thành mảng các đối tượng {id, img, isVideo}
   const items = files.map((file, index) => ({
     id: index + 1,
-    img: `https://${bucketName}.s3.amazonaws.com/${file.key}`, // Địa chỉ hình ảnh hoặc video
+    img: `https://${bucketName}.s3.amazonaws.com/${file.key}`,
     isVideo: file.isVideo,
   }));
+
+  const handleYearChange = (event) => {
+    setSelectedYear(parseInt(event.target.value, 10));
+    setPage(1); // Reset về trang đầu
+  };
 
   return (
     <>
@@ -103,14 +109,33 @@ const FileList = () => {
         error={error}
         successMessage={successMessage}
       >
-        <div className="h-screen w-100%">
-          {files.length === 0 && !loading && <p>No files found.</p>}
-          {/* Chuyển props 'items' vào Mainpage */}
+        <div className="h-screen w-100% flex justify-center items-center bg-gray-950 ">
+          {files.length === 0 && !loading && <p className="text-white font-medium text-xl">No memories found.</p>}
           {files.length !== 0 && <Mainpage items={items} />}
         </div>
       </Loading>
+
+      {/* Select Năm */}
+      <div className="fixed xl:left-[5.7rem] xl:bottom-[17%] bottom-[30%] left-1/2 transform -translate-x-1/2 flex items-center">
+        <select
+          id="yearSelect"
+          value={selectedYear}
+          onChange={handleYearChange}
+          className="rounded px-2 py-1 cursor-pointer bg-yellow-200 outline-none"
+        >
+          {Array.from({ length: 5 }, (_, i) => {
+            const year = new Date().getFullYear() - i;
+            return (
+              <option key={year} value={year} className="cursor-pointer outline-none border-none xl:text-base text-xs p-0">
+                {year}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+
       {/* Phân trang */}
-      <div className="fixed xl:bottom-10 xl:left-[5.8rem] bottom-[23%] left-1/2 transform -translate-x-1/2 flex items-center gap-x-2 text-2xl bg-yellow-500 rounded-full px-2 py-1">
+      <div className="fixed xl:bottom-10 xl:left-[5.8rem] bottom-[23%] left-1/2 transform -translate-x-1/2 flex items-center gap-x-2 text-2xl bg-yellow-200 rounded-full px-2 py-1">
         <span
           onClick={() => page > 1 && setPage((prevPage) => prevPage - 1)}
           className="cursor-pointer"
@@ -124,7 +149,7 @@ const FileList = () => {
             if (hasMore) {
               setPage((prevPage) => prevPage + 1);
             } else {
-              toast.info("You have reached the last page."); // Hiển thị toast khi không còn trang tiếp theo
+              toast.info("You have reached the last page.");
             }
           }}
           className="cursor-pointer"

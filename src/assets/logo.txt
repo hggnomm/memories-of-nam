@@ -1,0 +1,4 @@
+start color: #FFCCEA
+end color: #FF77B7
+outline color: #493628
+outlint: 1

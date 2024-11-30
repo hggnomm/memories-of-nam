@@ -78,9 +78,9 @@ const Mainpage = ({ items }) => {
           alt={`Item ${item.id}`}
           className={`${
             isFakeItem
-              ? "xl:h-[65%] xl:border-2 border-[#1e2721]"
+              ? "xl:h-[65%] xl:w-auto w-[95%] xl:border-2 border-[#1e2721]"
               : "w-full h-full"
-          } rounded-xl shadow-[0_10px_50px_rgba(228,_224,_225,_0.9)]`}
+          } rounded-xl shadow-[0_20px_80px_rgba(228,_224,_225,_0.3)]`}
           disablePictureInPicture
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -102,7 +102,7 @@ const Mainpage = ({ items }) => {
   };
 
   return (
-    <div className="backgroundCustom relative flex flex-col items-center justify-center min-h-screen min-w-full overflow-hidden bg-gray-950 ">
+    <div className="backgroundCustom relative flex flex-col items-center justify-center min-h-screen min-w-full overflow-hidden">
       {/* Custom background */}
       <BackgroundBubbles />
       {/* Fake item */}
