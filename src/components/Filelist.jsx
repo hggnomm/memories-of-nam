@@ -109,61 +109,70 @@ const FileList = () => {
         error={error}
         successMessage={successMessage}
       >
-        <div className="h-screen w-100% flex justify-center items-center bg-gray-950 ">
+        <div className="h-screen w-screen flex flex-col justify-center items-center bg-gray-950 ">
           {files.length === 0 && !loading && (
-            <p className="text-white font-medium text-xl">No memories found.</p>
+            <div className="h-screen w-screen flex justify-center items-center">
+              <p className="text-white font-medium text-xl">
+                No memories found.
+              </p>
+            </div>
           )}
-          {files.length !== 0 && <Mainpage items={items} />}
+          <div className="relative h-screen w-full">
+            {files.length !== 0 && <Mainpage items={items} />}
+            <div className="absolute w-auto left-1/2 xl:bottom-28 bottom-52 transform -translate-x-1/2 flex flex-col items-center gap-2">
+              {/* Select Năm */}
+              <div className="flex items-center">
+                <select
+                  id="yearSelect"
+                  value={selectedYear}
+                  onChange={handleYearChange}
+                  className="rounded xl:px-2 xl:py-1 cursor-pointer bg-yellow-200 outline-none"
+                >
+                  {Array.from({ length: 3 }, (_, i) => {
+                    const year = new Date().getFullYear() - i;
+                    return (
+                      <option
+                        key={year}
+                        value={year}
+                        className="cursor-pointer outline-none border-none xl:text-base text-xs p-0"
+                      >
+                        {year}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+
+              {/* Phân trang */}
+              <div className="flex items-center gap-x-2 text-2xl bg-yellow-200 rounded-full xl:px-2 xl:py-1">
+                <span
+                  onClick={() =>
+                    page > 1 && setPage((prevPage) => prevPage - 1)
+                  }
+                  className="cursor-pointer"
+                  disabled={page === 1}
+                >
+                  <IoMdArrowDropleftCircle />
+                </span>
+                <p className="xl:text-xl text-base select-none">{page}</p>
+                <span
+                  onClick={() => {
+                    if (hasMore) {
+                      setPage((prevPage) => prevPage + 1);
+                    } else {
+                      toast.info("You have reached the last page.");
+                    }
+                  }}
+                  className="cursor-pointer"
+                  disabled={!hasMore}
+                >
+                  <IoMdArrowDroprightCircle />
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </Loading>
-
-      {/* Select Năm */}
-      <div className="fixed bottom-[12.5rem] xl:bottom-[10rem] left-1/2 transform -translate-x-1/2 flex items-center">
-        <select
-          id="yearSelect"
-          value={selectedYear}
-          onChange={handleYearChange}
-          className="rounded xl:px-2 xl:py-1 cursor-pointer bg-yellow-200 outline-none"
-        >
-          {Array.from({ length: 3 }, (_, i) => {
-            const year = new Date().getFullYear() - i;
-            return (
-              <option
-                key={year}
-                value={year}
-                className="cursor-pointer outline-none border-none xl:text-base text-xs p-0"
-              >
-                {year}
-              </option>
-            );
-          })}
-        </select>
-      </div>
-
-      {/* Phân trang */}
-      <div className="fixed bottom-[10rem] xl:bottom-[7.2rem] left-1/2 transform -translate-x-1/2 flex items-center gap-x-2 text-2xl bg-yellow-200 rounded-full xl:px-2 xl:py-1">
-        <span
-          onClick={() => page > 1 && setPage((prevPage) => prevPage - 1)}
-          className="cursor-pointer"
-          disabled={page === 1}
-        >
-          <IoMdArrowDropleftCircle />
-        </span>
-        <p className="xl:text-xl text-base select-none">{page}</p>
-        <span
-          onClick={() => {
-            if (hasMore) {
-              setPage((prevPage) => prevPage + 1);
-            } else {
-              toast.info("You have reached the last page.");
-            }
-          }}
-          className="cursor-pointer"
-          disabled={!hasMore}
-        >
-          <IoMdArrowDroprightCircle />
-        </span>
-      </div>
     </>
   );
 };
