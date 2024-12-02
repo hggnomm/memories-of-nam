@@ -116,14 +116,14 @@ const FileList = () => {
       </Loading>
 
       {/* Select Năm */}
-      <div className="fixed xl:left-[5.7rem] xl:bottom-[17%] bottom-[32%] left-1/2 transform -translate-x-1/2 flex items-center">
+      <div className="fixed xl:left-[5.7rem] xl:bottom-[17%] bottom-[36%] left-1/2 transform -translate-x-1/2 flex items-center">
         <select
           id="yearSelect"
           value={selectedYear}
           onChange={handleYearChange}
           className="rounded px-2 py-1 cursor-pointer bg-yellow-200 outline-none"
         >
-          {Array.from({ length: 5 }, (_, i) => {
+          {Array.from({ length: 3 }, (_, i) => {
             const year = new Date().getFullYear() - i;
             return (
               <option key={year} value={year} className="cursor-pointer outline-none border-none xl:text-base text-xs p-0">
@@ -135,7 +135,7 @@ const FileList = () => {
       </div>
 
       {/* Phân trang */}
-      <div className="fixed xl:bottom-10 xl:left-[5.8rem] bottom-[26%] left-1/2 transform -translate-x-1/2 flex items-center gap-x-2 text-2xl bg-yellow-200 rounded-full px-2 py-1">
+      <div className="fixed xl:bottom-10 xl:left-[5.8rem] bottom-[28%] left-1/2 transform -translate-x-1/2 flex items-center gap-x-2 text-2xl bg-yellow-200 rounded-full px-2 py-1">
         <span
           onClick={() => page > 1 && setPage((prevPage) => prevPage - 1)}
           className="cursor-pointer"

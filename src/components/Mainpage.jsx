@@ -152,7 +152,7 @@ const Mainpage = ({ items }) => {
       </div>
 
       {/* Vùng danh sách các ô nhỏ */}
-      <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-6 xl:grid-cols-10 xl:gap-4 gap-2 mt-auto xl:mb-5 mb-32 bg-gray-100 xl:p-4 p-1 xl:rounded-xl shadow-lg xl:w-3/4 sm:w-full">
+      <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-6 xl:grid-cols-10 xl:gap-4 gap-2 mt-auto xl:mb-5 mb-28 bg-gray-100 xl:p-4 p-1 xl:rounded-xl shadow-lg xl:w-3/4 sm:w-full">
         {items?.map((item) => (
           <div
             key={item.id}

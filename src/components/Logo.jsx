@@ -14,7 +14,7 @@ const Logo = () => {
         </div>
 
         <div>
-          <span className="text-gray-300 ml-1 xl:mt-8 block w-44 italic text-sm xl:text-base">
+          <span className="text-gray-300 ml-1 xl:mt-8 block w-44 italic text-xs xl:text-base">
             Mọi khoảnh khắc và sự hoài niệm, nó chính là yếu tố tạo nên giá trị cho cuộc
             sống.
           </span>
