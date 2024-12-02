@@ -17,7 +17,7 @@ const Preloader = () => {
         clearTimeout(timer1);
         clearTimeout(timer2);
       };
-    }, 2500);
+    }, 1500);
 
   }, []);
 

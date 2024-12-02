@@ -3,13 +3,15 @@ import FileList from "./components/Filelist";
 import { ToastContainer } from "react-toastify";
 import Preloader from "./components/PreLoading/PreLoader";
 import CommingSoon from "./components/ComingSoon/ComingSoon";
+import Logo from "./components/Logo";
 
 const App = () => {
   return (
     <div className="h-screen w-screen">
       <ToastContainer />
-      {/* <FileList /> */}
-      <CommingSoon />
+      <Logo />
+      <FileList />
+      {/* <CommingSoon /> */}
       <Preloader />
     </div>
   );
