@@ -110,23 +110,29 @@ const FileList = () => {
         successMessage={successMessage}
       >
         <div className="h-screen w-100% flex justify-center items-center bg-gray-950 ">
-          {files.length === 0 && !loading && <p className="text-white font-medium text-xl">No memories found.</p>}
+          {files.length === 0 && !loading && (
+            <p className="text-white font-medium text-xl">No memories found.</p>
+          )}
           {files.length !== 0 && <Mainpage items={items} />}
         </div>
       </Loading>
 
       {/* Select Năm */}
-      <div className="fixed xl:left-[5.7rem] xl:bottom-[15%] bottom-[48%] left-1/2 transform -translate-x-1/2 flex items-center">
+      <div className="fixed bottom-[14rem] xl:bottom-[10rem] left-1/2 transform -translate-x-1/2 flex items-center">
         <select
           id="yearSelect"
           value={selectedYear}
           onChange={handleYearChange}
-          className="rounded px-2 py-1 cursor-pointer bg-yellow-200 outline-none"
+          className="rounded xl:px-2 xl:py-1 cursor-pointer bg-yellow-200 outline-none"
         >
           {Array.from({ length: 3 }, (_, i) => {
             const year = new Date().getFullYear() - i;
             return (
-              <option key={year} value={year} className="cursor-pointer outline-none border-none xl:text-base text-xs p-0">
+              <option
+                key={year}
+                value={year}
+                className="cursor-pointer outline-none border-none xl:text-base text-xs p-0"
+              >
                 {year}
               </option>
             );
@@ -135,7 +141,7 @@ const FileList = () => {
       </div>
 
       {/* Phân trang */}
-      <div className="fixed xl:bottom-12 xl:left-[5.8rem] bottom-[30%] left-1/2 transform -translate-x-1/2 flex items-center gap-x-2 text-2xl bg-yellow-200 rounded-full px-2 py-1">
+      <div className="fixed bottom-[11rem] xl:bottom-[7.2rem] left-1/2 transform -translate-x-1/2 flex items-center gap-x-2 text-2xl bg-yellow-200 rounded-full xl:px-2 xl:py-1">
         <span
           onClick={() => page > 1 && setPage((prevPage) => prevPage - 1)}
           className="cursor-pointer"
@@ -143,7 +149,7 @@ const FileList = () => {
         >
           <IoMdArrowDropleftCircle />
         </span>
-        <p className="text-xl select-none">{page}</p>
+        <p className="xl:text-xl text-base select-none">{page}</p>
         <span
           onClick={() => {
             if (hasMore) {
