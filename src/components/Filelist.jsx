@@ -116,7 +116,7 @@ const FileList = () => {
       </Loading>
 
       {/* Select Năm */}
-      <div className="fixed xl:left-[5.7rem] xl:bottom-[15%] bottom-[40%] left-1/2 transform -translate-x-1/2 flex items-center">
+      <div className="fixed xl:left-[5.7rem] xl:bottom-[15%] bottom-[48%] left-1/2 transform -translate-x-1/2 flex items-center">
         <select
           id="yearSelect"
           value={selectedYear}
@@ -135,7 +135,7 @@ const FileList = () => {
       </div>
 
       {/* Phân trang */}
-      <div className="fixed xl:bottom-12 xl:left-[5.8rem] bottom-[32%] left-1/2 transform -translate-x-1/2 flex items-center gap-x-2 text-2xl bg-yellow-200 rounded-full px-2 py-1">
+      <div className="fixed xl:bottom-12 xl:left-[5.8rem] bottom-[30%] left-1/2 transform -translate-x-1/2 flex items-center gap-x-2 text-2xl bg-yellow-200 rounded-full px-2 py-1">
         <span
           onClick={() => page > 1 && setPage((prevPage) => prevPage - 1)}
           className="cursor-pointer"
