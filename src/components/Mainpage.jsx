@@ -101,6 +101,18 @@ const Mainpage = ({ items }) => {
     }
   };
 
+  const handleNext = () => {
+    if (selectedId < items.length) {
+      setSelectedId((prevId) => prevId + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (selectedId > 1) {
+      setSelectedId((prevId) => prevId - 1);
+    }
+  };
+
   return (
     <div className="backgroundCustom relative flex flex-col items-center justify-center min-h-screen min-w-full overflow-hidden">
       {/* Custom background */}
@@ -149,6 +161,23 @@ const Mainpage = ({ items }) => {
             )}
           </motion.div>
         )}
+        {/* Nút next và back */}
+        <div className="absolute xl:bottom-9 bottom-[13rem] flex justify-between w-full px-16">
+          <button
+            className="bg-black text-white p-3 rounded-full opacity-70 hover:opacity-100 cursor-pointer"
+            onClick={handleBack}
+            disabled={selectedId === 1}
+          >
+            Back
+          </button>
+          <button
+            className="bg-black text-white p-3 rounded-full opacity-70 hover:opacity-100 cursor-pointer"
+            onClick={handleNext}
+            disabled={selectedId === items.length}
+          >
+            Next
+          </button>
+        </div>
       </div>
 
       {/* Vùng danh sách các ô nhỏ */}
