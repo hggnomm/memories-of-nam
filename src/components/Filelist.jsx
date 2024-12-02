@@ -119,7 +119,7 @@ const FileList = () => {
           )}
           <div className="relative h-screen w-full">
             {files.length !== 0 && <Mainpage items={items} />}
-            <div className="absolute w-auto left-1/2 xl:bottom-28 bottom-52 transform -translate-x-1/2 flex flex-col items-center gap-2">
+            <div className="absolute w-auto left-1/2 xl:bottom-[7.7rem] bottom-52 transform -translate-x-1/2 flex flex-col items-center gap-2">
               {/* Select Năm */}
               <div className="flex items-center">
                 <select
