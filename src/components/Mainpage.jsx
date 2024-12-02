@@ -144,16 +144,20 @@ const Mainpage = ({ items }) => {
               duration: 1,
             }}
           >
-            <button
-              className={`absolute text-white bg-black p-3 rounded-full z-20 transition-opacity duration-500 ${
-                isButtonVisible || isButtonHovered ? "opacity-50" : "opacity-0"
-              }`}
-              onClick={handlePlayPause}
-              onMouseEnter={handleButtonMouseEnter}
-              onMouseLeave={handleButtonMouseLeave}
-            >
-              <img width={36} src={isPlaying ? pauseIcon : playIcon} />
-            </button>
+            {items.find((item) => item.id === selectedId).isVideo && (
+              <button
+                className={`absolute text-white bg-black p-3 rounded-full z-20 transition-opacity duration-500 ${
+                  isButtonVisible || isButtonHovered
+                    ? "opacity-50"
+                    : "opacity-0"
+                }`}
+                onClick={handlePlayPause}
+                onMouseEnter={handleButtonMouseEnter}
+                onMouseLeave={handleButtonMouseLeave}
+              >
+                <img width={36} src={isPlaying ? pauseIcon : playIcon} />
+              </button>
+            )}
 
             {renderMedia(
               items.find((item) => item.id === selectedId),
