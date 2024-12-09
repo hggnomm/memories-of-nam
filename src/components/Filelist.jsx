@@ -26,7 +26,7 @@ const FileList = () => {
   const [page, setPage] = useState(1);
   const [continuationToken, setContinuationToken] = useState(null);
   const [hasMore, setHasMore] = useState(true);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Năm hiện tại
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   const bucketName = import.meta.env.VITE_AWS_S3_BUCKET_NAME;
   const maxItemsPerPage = 10;
@@ -36,7 +36,7 @@ const FileList = () => {
     const command = new ListObjectsV2Command({
       Bucket: bucketName,
       Prefix: "uploads/",
-      MaxKeys: maxItemsPerPage,
+      MaxKeys: 1000, // Fetch more items to sort later
       ContinuationToken: continuationToken,
     });
 
@@ -44,10 +44,11 @@ const FileList = () => {
       const response = await s3Client.send(command);
 
       if (!response.Contents || response.Contents.length === 0) {
-        setFiles([]); // Không có tệp nào
+        setFiles([]);
         return;
       }
 
+      // Process and sort files
       const fileList = response.Contents.map((file) => ({
         key: file.Key,
         size: (file.Size / 1024).toFixed(2) + " KB",
@@ -58,30 +59,26 @@ const FileList = () => {
           file.Key.toLowerCase().endsWith(".avi") ||
           file.Key.toLowerCase().endsWith(".mkv") ||
           file.Key.toLowerCase().endsWith(".webm"),
-      }));
+      }))
+        // Filter by selected year
+        .filter((file) => file.lastModified.getFullYear() === selectedYear)
+        // Sort from newest to oldest
+        .sort((a, b) => b.lastModified - a.lastModified);
 
-      // Lọc danh sách dựa trên năm đã chọn
-      const filteredFiles = fileList.filter(
-        (file) => file.lastModified.getFullYear() === selectedYear
+      // Paginate the sorted files
+      const startIndex = (page - 1) * maxItemsPerPage;
+      const paginatedFiles = fileList.slice(
+        startIndex,
+        startIndex + maxItemsPerPage
       );
 
-      // Sắp xếp các tệp theo ngày sửa đổi, ngày gần nhất lên trước tiên
-      const sortedFiles = filteredFiles.sort(
-        (a, b) => b.lastModified - a.lastModified
+      setFiles(paginatedFiles);
+      setHasMore(fileList.length > startIndex + maxItemsPerPage);
+
+      // Update success message
+      setSuccessMessage(
+        `Loaded ${paginatedFiles.length} files for ${selectedYear}`
       );
-
-      setFiles(sortedFiles); // Cập nhật các tệp đã được sắp xếp
-
-      if (response.IsTruncated) {
-        setContinuationToken(response.NextContinuationToken);
-        setHasMore(true);
-        setSuccessMessage(`Loaded page ${page} of files.`);
-      } else {
-        setContinuationToken(null);
-        setHasMore(false);
-        setSuccessMessage("All files loaded successfully!");
-        toast.info("You have reached the last page.");
-      }
     } catch (err) {
       setError("Failed to fetch files from S3");
       console.error(err);
@@ -94,7 +91,7 @@ const FileList = () => {
     setFiles([]);
     setContinuationToken(null);
     fetchFilesFromS3();
-  }, [page, selectedYear]); // Gọi lại fetch khi năm thay đổi
+  }, [page, selectedYear]);
 
   const items = files.map((file, index) => ({
     id: index + 1,
@@ -104,7 +101,7 @@ const FileList = () => {
 
   const handleYearChange = (event) => {
     setSelectedYear(parseInt(event.target.value, 10));
-    setPage(1); // Reset về trang đầu
+    setPage(1); // Reset to first page
   };
 
   return (
@@ -114,7 +111,7 @@ const FileList = () => {
         error={error}
         successMessage={successMessage}
       >
-        <div className="h-screen w-screen flex flex-col justify-center items-center bg-gray-950 ">
+        <div className="h-screen w-screen flex flex-col justify-center items-center bg-gray-950">
           {files.length === 0 && !loading && (
             <div className="h-screen w-screen flex justify-center items-center">
               <p className="text-white font-medium text-xl">
@@ -125,7 +122,7 @@ const FileList = () => {
           <div className="relative h-screen w-full">
             {files.length !== 0 && <Mainpage items={items} />}
             <div className="absolute w-auto left-1/2 xl:bottom-[7.7rem] bottom-52 transform -translate-x-1/2 flex flex-col items-center gap-2">
-              {/* Select Năm */}
+              {/* Year Select */}
               <div className="flex items-center">
                 <select
                   id="yearSelect"
@@ -148,7 +145,7 @@ const FileList = () => {
                 </select>
               </div>
 
-              {/* Phân trang */}
+              {/* Pagination */}
               <div className="flex items-center gap-x-2 text-2xl bg-yellow-200 rounded-full xl:px-2 xl:py-1">
                 <span
                   onClick={() =>
