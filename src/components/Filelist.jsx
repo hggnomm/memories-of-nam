@@ -44,7 +44,7 @@ const FileList = () => {
       const response = await s3Client.send(command);
 
       if (!response.Contents || response.Contents.length === 0) {
-        setFiles([]);
+        setFiles([]); // Không có tệp nào
         return;
       }
 
@@ -65,7 +65,12 @@ const FileList = () => {
         (file) => file.lastModified.getFullYear() === selectedYear
       );
 
-      setFiles(filteredFiles);
+      // Sắp xếp các tệp theo ngày sửa đổi, ngày gần nhất lên trước tiên
+      const sortedFiles = filteredFiles.sort(
+        (a, b) => b.lastModified - a.lastModified
+      );
+
+      setFiles(sortedFiles); // Cập nhật các tệp đã được sắp xếp
 
       if (response.IsTruncated) {
         setContinuationToken(response.NextContinuationToken);
